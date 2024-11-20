@@ -1,11 +1,20 @@
 import React from 'react';
-import ProductList from './components/ProductList';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Navbar from './components/Navbar';
+import Home from './pages/Home';
+import Products from './pages/Products';
 
 const App: React.FC = () => {
     return (
-        <div className="container mx-auto">
-            <ProductList />
-        </div>
+        <Router>
+            <Navbar />
+            <div className="container mx-auto">
+                <Routes>
+                    <Route path="/" element={ <Home /> } />
+                    <Route path="/products" element={ <Products /> } />
+                </Routes>
+            </div>
+        </Router>
     );
 };
 
