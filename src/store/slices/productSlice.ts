@@ -3,8 +3,9 @@ import apiClient from '../../api/axios';
 import { AxiosError } from 'axios';
 
 interface Product {
-    id: number;
+    productId: number;
     name: string;
+    description: string;
     price: number;
 }
 
@@ -35,6 +36,25 @@ export const fetchProducts = createAsyncThunk('products/fetchProducts', async (_
     }
 });
 
+export const deleteProduct = createAsyncThunk('products/deleteProduct', async (productId: number, thunkAPI) => {
+    try {
+        await apiClient.delete(`/product/${ productId }`, {
+            headers: {
+                Authorization: `Bearer ${ localStorage.getItem('token') }`,
+            },
+        });
+        return productId;
+    } catch (error) {
+        if (error instanceof AxiosError && error.response) {
+            return thunkAPI.rejectWithValue(error.response.data.error || 'Failed to delete the product');
+        }
+        if (error instanceof Error) {
+            return thunkAPI.rejectWithValue(error.message);
+        }
+        return thunkAPI.rejectWithValue('An unknown error occurred while deleting the product.');
+    }
+});
+
 const productSlice = createSlice({
     name: 'products',
     initialState,
@@ -49,6 +69,18 @@ const productSlice = createSlice({
             state.products = action.payload;
         });
         builder.addCase(fetchProducts.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.payload as string;
+        });
+        builder.addCase(deleteProduct.pending, (state) => {
+            state.loading = true;
+            state.error = null;
+        });
+        builder.addCase(deleteProduct.fulfilled, (state, action) => {
+            state.loading = false;
+            state.products = state.products.filter(product => product.productId !== action.payload);
+        });
+        builder.addCase(deleteProduct.rejected, (state, action) => {
             state.loading = false;
             state.error = action.payload as string;
         });
