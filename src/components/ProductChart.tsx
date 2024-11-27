@@ -18,13 +18,12 @@ interface ProductChartProps {
 }
 
 const ProductChart: React.FC<ProductChartProps> = ({ data }) => {
-    // Prepare data for the chart
     const chartData = {
-        labels: data.map((product) => product.name), // Product names as labels
+        labels: data.map((product) => product.name),
         datasets: [
             {
                 label: 'Price (USD)',
-                data: data.map((product) => product.price), // Product prices as data points
+                data: data.map((product) => product.price),
                 backgroundColor: 'rgba(75, 192, 192, 0.5)',
                 borderColor: 'rgba(75, 192, 192, 1)',
                 borderWidth: 1,
@@ -35,21 +34,12 @@ const ProductChart: React.FC<ProductChartProps> = ({ data }) => {
     const options = {
         responsive: true,
         plugins: {
-            legend: {
-                position: 'top' as const,
-            },
-            title: {
-                display: true,
-                text: 'Product Prices',
-            },
+            legend: { position: 'top' as const },
+            title: { display: true, text: 'Product Prices' },
         },
     };
 
-    return (
-        <div className="p-4">
-            <Bar data={ chartData } options={ options } />
-        </div>
-    );
+    return <Bar data={ chartData } options={ options } />;
 };
 
 export default ProductChart;

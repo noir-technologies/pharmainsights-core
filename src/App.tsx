@@ -14,14 +14,7 @@ const App: React.FC = () => {
             <Routes>
                 <Route path="/login" element={ <Login /> } />
                 <Route path="/register" element={ <Register /> } />
-                <Route
-                    path="/"
-                    element={
-                        <ProtectedRoute>
-                            <Home />
-                        </ProtectedRoute>
-                    }
-                />
+                <Route path="/" element={ <ProtectedRoute><Home /></ProtectedRoute> } />
                 <Route path="/products" element={ <ProtectedRoute><Products /></ProtectedRoute> } />
                 <Route path="*" element={ <Navigate to="/login" replace /> } />
             </Routes>
