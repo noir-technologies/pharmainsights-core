@@ -1,20 +1,20 @@
 import React from 'react';
-import { Navigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { Navigate } from 'react-router-dom';
 import { RootState } from '../store/store';
 
 interface Props {
-    children: JSX.Element;
+    children: React.ReactNode;
 }
 
 const ProtectedRoute: React.FC<Props> = ({ children }) => {
-    const { token } = useSelector((state: RootState) => state.auth);
+    const { user } = useSelector((state: RootState) => state.auth);
 
-    if (!token) {
+    if (!user) {
         return <Navigate to="/login" replace />;
     }
 
-    return children;
+    return <>{ children }</>;
 };
 
 export default ProtectedRoute;

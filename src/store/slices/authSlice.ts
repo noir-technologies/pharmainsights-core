@@ -78,9 +78,14 @@ const authSlice = createSlice({
             state.token = null;
             localStorage.removeItem('token');
         },
+        rehydrate (state, action: PayloadAction<{ user: User; token: string; } | null>) {
+            if (action.payload) {
+                state.user = action.payload.user;
+                state.token = action.payload.token;
+            }
+        },
     },
     extraReducers: (builder) => {
-
         builder.addCase(login.pending, (state) => {
             state.loading = true;
             state.error = null;
@@ -97,8 +102,6 @@ const authSlice = createSlice({
             state.loading = false;
             state.error = action.payload || 'An unexpected error occurred';
         });
-
-
         builder.addCase(register.pending, (state) => {
             state.loading = true;
             state.error = null;
@@ -113,6 +116,6 @@ const authSlice = createSlice({
     },
 });
 
-export const { logout } = authSlice.actions;
+export const { logout, rehydrate } = authSlice.actions;
 
 export default authSlice.reducer;
