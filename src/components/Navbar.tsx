@@ -1,11 +1,13 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '../store/store';
 import { logout } from '../store/slices/authSlice';
+import { fetchPharmacy } from '../store/slices/pharmacySlice';
 
 const Navbar: React.FC = () => {
     const { user } = useSelector((state: RootState) => state.auth);
+    const { pharmacy } = useSelector((state: RootState) => state.pharmacy);
     const dispatch: AppDispatch = useDispatch();
     const navigate = useNavigate();
 
@@ -14,10 +16,20 @@ const Navbar: React.FC = () => {
         navigate('/login');
     };
 
+    useEffect(() => {
+        if (user?.pharmacyId) {
+            dispatch(fetchPharmacy(user.pharmacyId));
+        }
+    }, [user, dispatch]);
+
     return (
-        <nav className="navbar fixed top-0 left-0 w-full bg-base-100 shadow-md p-4">
+        <nav className="navbar fixed top-0 left-0 w-full bg-base-100 shadow-md p-4 z-10">
             <div className="flex-1">
                 <Link to="/" className="text-xl font-bold text-primary">
+                    {
+                        user?.pharmacyId &&
+                        <span className='text-white'>{ pharmacy?.name + ' ' }</span>
+                    }
                     PharmaInsights
                 </Link>
             </div>

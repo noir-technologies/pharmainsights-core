@@ -10,7 +10,6 @@ import {
     Legend,
 } from 'chart.js';
 
-// Register Chart.js components
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 interface ProductChartProps {
@@ -35,7 +34,6 @@ const ProductChart: React.FC<ProductChartProps> = ({ data }) => {
         responsive: true,
         plugins: {
             legend: { position: 'top' as const },
-            title: { display: true, text: 'Product Prices' },
         },
     };
 

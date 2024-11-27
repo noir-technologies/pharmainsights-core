@@ -10,6 +10,7 @@ import Products from './pages/Products';
 import { AppDispatch } from './store/store';
 import { rehydrate } from './store/slices/authSlice';
 import { getUserFromToken } from './utils/authUtils';
+import { fetchProducts } from './store/slices/productSlice';
 
 const App: React.FC = () => {
     const dispatch: AppDispatch = useDispatch();
@@ -31,6 +32,8 @@ const App: React.FC = () => {
         };
 
         rehydrateUser();
+
+        dispatch(fetchProducts());
     }, [dispatch]);
 
     if (!rehydrated) {
