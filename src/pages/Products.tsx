@@ -8,7 +8,7 @@ const Products: React.FC = () => {
     const { products } = useSelector((state: RootState) => state.products);
 
     return (
-        <div className="p-4">
+        <div className="min-h-screen bg-gradient-to-b from-blue-50 to-blue-100 flex justify-center items-center flex-col">
             <h1 className="text-2xl font-bold mb-4">Products</h1>
             <ProductList />
             <h2 className="text-xl font-bold mt-8">Product Prices Chart</h2>
