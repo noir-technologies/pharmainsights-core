@@ -12,19 +12,20 @@ import {
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-interface ProductChartProps {
-    data: { name: string; price: number; }[];
+interface InventoryChartProps {
+    data: { productName: string; totalUnits: number; }[];
+    title: string;
 }
 
-const ProductChart: React.FC<ProductChartProps> = ({ data }) => {
+const InventoryChart: React.FC<InventoryChartProps> = ({ data, title }) => {
     const chartData = {
-        labels: data.map((product) => product.name),
+        labels: data.map((item) => item.productName),
         datasets: [
             {
-                label: 'Price (USD)',
-                data: data.map((product) => product.price),
-                backgroundColor: 'rgba(75, 192, 192, 0.5)',
-                borderColor: 'rgba(75, 192, 192, 1)',
+                label: 'Total Units',
+                data: data.map((item) => item.totalUnits),
+                backgroundColor: 'rgba(153, 102, 255, 0.5)',
+                borderColor: 'rgba(153, 102, 255, 1)',
                 borderWidth: 1,
             },
         ],
@@ -34,10 +35,11 @@ const ProductChart: React.FC<ProductChartProps> = ({ data }) => {
         responsive: true,
         plugins: {
             legend: { position: 'top' as const },
+            title: { display: true, text: title },
         },
     };
 
     return <Bar data={ chartData } options={ options } />;
 };
 
-export default ProductChart;
+export default InventoryChart;

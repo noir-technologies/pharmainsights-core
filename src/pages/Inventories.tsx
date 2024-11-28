@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import ProductList from '../components/ProductList';
+import InventoryList from '../components/InventoryList';
 import ImportModal from '../components/ImportModal';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../store/store';
-import { fetchProducts } from '../store/slices/productSlice';
+import { fetchInventories } from '../store/slices/inventorySlice';
 
-const Products: React.FC = () => {
+const Inventories: React.FC = () => {
     const dispatch = useDispatch<AppDispatch>();
 
     const [isModalOpen, setModalOpen] = useState(false);
@@ -14,9 +14,9 @@ const Products: React.FC = () => {
     const closeModal = () => setModalOpen(false);
     return (
         <div className="min-h-screen bg-gradient-to-b from-blue-50 to-blue-100 flex flex-col items-center pt-[120px]">
-            <h1 className="text-3xl font-bold my-6">Products</h1>
+            <h1 className="text-3xl font-bold my-6">Inventories</h1>
             <div className="w-full max-w-6xl">
-                <ProductList />
+                <InventoryList />
             </div>
 
             {/* Floating Button */ }
@@ -24,7 +24,7 @@ const Products: React.FC = () => {
                 onClick={ openModal }
                 className="fixed bottom-8 right-8 btn btn-primary text-white p-4 rounded-full shadow-lg focus:outline-none focus:ring focus:ring-blue-300"
             >
-                Import Products
+                Import Inventories
             </button>
 
             {/* Modal */ }
@@ -32,12 +32,12 @@ const Products: React.FC = () => {
                 <ImportModal
                     isOpen={ isModalOpen }
                     onClose={ closeModal }
-                    context="products"
-                    onSuccess={ () => dispatch(fetchProducts()) }
+                    context="inventories"
+                    onSuccess={ () => dispatch(fetchInventories()) }
                 />
             }
         </div>
     );
 };
 
-export default Products;
+export default Inventories;

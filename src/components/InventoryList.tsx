@@ -1,19 +1,21 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { fetchProducts, deleteProduct } from '../store/slices/productSlice';
+import { fetchInventories, deleteInventory } from '../store/slices/inventorySlice';
 import { RootState, AppDispatch } from '../store/store';
 import { showSuccessAlert, showErrorAlert } from '../utils/alertUtils';
 import Swal from 'sweetalert2';
+import { format } from 'date-fns';
 
-const ProductList: React.FC = () => {
+const InventoryList: React.FC = () => {
     const dispatch = useDispatch<AppDispatch>();
-    const { products, loading, error } = useSelector((state: RootState) => state.products);
+    const { inventories, loading, error } = useSelector((state: RootState) => state.inventories);
+    const { products } = useSelector((state: RootState) => state.products);
 
     useEffect(() => {
-        dispatch(fetchProducts());
+        dispatch(fetchInventories());
     }, [dispatch]);
 
-    const handleDelete = async (productId: number) => {
+    const handleDelete = async (inventoryId: number) => {
         const result = await Swal.fire({
             title: 'Are you sure?',
             text: 'You won’t be able to undo this action!',
@@ -25,17 +27,20 @@ const ProductList: React.FC = () => {
         });
 
         if (result.isConfirmed) {
-            dispatch(deleteProduct(productId))
+            dispatch(deleteInventory(inventoryId))
                 .then(() => {
-                    showSuccessAlert('The product has been deleted.');
+                    showSuccessAlert('The inventory has been deleted.');
                 })
                 .catch(() => {
-                    showErrorAlert('Failed to delete the product.');
+                    showErrorAlert('Failed to delete the inventory.');
                 });
         }
     };
 
-    if (loading) return <div className="text-center text-lg">Loading products...</div>;
+    const formatDate = (dateString: string | undefined) =>
+        dateString ? format(new Date(dateString), 'MMM dd, yyyy') : 'N/A';
+
+    if (loading) return <div className="text-center text-lg">Loading inventories...</div>;
     if (error) return <div className="text-center text-lg text-red-500">Error: { error }</div>;
 
     return (
@@ -45,23 +50,29 @@ const ProductList: React.FC = () => {
                     <thead className="sticky top-0 bg-blue-100 z-8 text-gray-950 text-base">
                         <tr>
                             <th>#</th>
-                            <th>Name</th>
-                            <th>Description</th>
-                            <th>Price</th>
+                            <th>Product</th>
+                            <th>Units Entered</th>
+                            <th>Units Sold</th>
+                            <th>Units Remaining</th>
+                            <th>Period</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
-                        { products.map((product, index) => (
-                            <tr key={ product.productId || index }>
-                                <th>{ product.productId }</th>
-                                <td>{ product.name }</td>
-                                <td>{ product.description }</td>
-                                <td>${ product.price.toFixed(2) }</td>
+                        { inventories.map((inventory, index) => (
+                            <tr key={ inventory.inventoryId || index }>
+                                <th>{ inventory.inventoryId }</th>
+                                <td>{ products.find((p) => p.productId === inventory.productId)?.name || 'Unknown' }</td>
+                                <td>{ inventory.quantityEntered }</td>
+                                <td>{ inventory.quantitySold }</td>
+                                <td>{ inventory.quantityEntered - inventory.quantitySold }</td>
+                                <td>
+                                    { formatDate(inventory.entryDate) } - { formatDate(inventory.saleDate) }
+                                </td>
                                 <td>
                                     <button
                                         className="bg-red-500 text-white px-4 py-1 rounded hover:bg-red-700"
-                                        onClick={ () => handleDelete(product.productId) }
+                                        onClick={ () => handleDelete(inventory.inventoryId) }
                                     >
                                         Delete
                                     </button>
@@ -75,4 +86,4 @@ const ProductList: React.FC = () => {
     );
 };
 
-export default ProductList;
+export default InventoryList;
