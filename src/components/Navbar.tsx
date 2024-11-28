@@ -54,6 +54,14 @@ const Navbar: React.FC = () => {
                                 </Link>
                             </li>
                             <li>
+                                <Link
+                                    to="/inventories"
+                                    className="btn btn-ghost normal-case text-sm hover:text-primary"
+                                >
+                                    Inventories
+                                </Link>
+                            </li>
+                            <li>
                                 <button
                                     className="btn btn-error text-white text-sm"
                                     onClick={ handleLogout }

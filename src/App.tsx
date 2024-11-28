@@ -11,6 +11,7 @@ import { AppDispatch } from './store/store';
 import { rehydrate } from './store/slices/authSlice';
 import { getUserFromToken } from './utils/authUtils';
 import { fetchProducts } from './store/slices/productSlice';
+import Inventories from './pages/Inventories';
 
 const App: React.FC = () => {
     const dispatch: AppDispatch = useDispatch();
@@ -48,6 +49,7 @@ const App: React.FC = () => {
                 <Route path="/register" element={ <Register /> } />
                 <Route path="/" element={ <ProtectedRoute><Home /></ProtectedRoute> } />
                 <Route path="/products" element={ <ProtectedRoute><Products /></ProtectedRoute> } />
+                <Route path="/inventories" element={ <ProtectedRoute><Inventories /></ProtectedRoute> } />
                 <Route path="*" element={ <Navigate to="/login" replace /> } />
             </Routes>
         </BrowserRouter>
