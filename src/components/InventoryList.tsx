@@ -4,6 +4,7 @@ import { fetchInventories, deleteInventory } from '../store/slices/inventorySlic
 import { RootState, AppDispatch } from '../store/store';
 import { showSuccessAlert, showErrorAlert } from '../utils/alertUtils';
 import Swal from 'sweetalert2';
+import { format } from 'date-fns';
 
 const InventoryList: React.FC = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -36,6 +37,9 @@ const InventoryList: React.FC = () => {
         }
     };
 
+    const formatDate = (dateString: string | undefined) =>
+        dateString ? format(new Date(dateString), 'MMM dd, yyyy') : 'N/A';
+
     if (loading) return <div className="text-center text-lg">Loading inventories...</div>;
     if (error) return <div className="text-center text-lg text-red-500">Error: { error }</div>;
 
@@ -62,7 +66,9 @@ const InventoryList: React.FC = () => {
                                 <td>{ inventory.quantityEntered }</td>
                                 <td>{ inventory.quantitySold }</td>
                                 <td>{ inventory.quantityEntered - inventory.quantitySold }</td>
-                                <td>{ inventory.entryDate } - { inventory.saleDate }</td>
+                                <td>
+                                    { formatDate(inventory.entryDate) } - { formatDate(inventory.saleDate) }
+                                </td>
                                 <td>
                                     <button
                                         className="bg-red-500 text-white px-4 py-1 rounded hover:bg-red-700"
