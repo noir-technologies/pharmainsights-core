@@ -12,18 +12,52 @@ interface Inventory {
     saleDate: string;
 }
 
+interface InventorySummary {
+    pharmacyId: number;
+    pharmacyName: string;
+    productId: number;
+    productName: string;
+    price: number;
+    totalUnitsEntered: number;
+    totalUnitsSold: number;
+    remainingUnits: number;
+}
+
 interface InventoryState {
     inventories: Inventory[];
+    summary: InventorySummary[];
     loading: boolean;
     error: string | null;
 }
 
 const initialState: InventoryState = {
     inventories: [],
+    summary: [],
     loading: false,
     error: null,
 };
 
+// Fetch inventory summary
+export const fetchInventorySummary = createAsyncThunk('inventories/fetchInventorySummary', async (_, thunkAPI) => {
+    try {
+        const response = await apiClient.get('/inventory/summary', {
+            headers: {
+                Authorization: `Bearer ${ localStorage.getItem('token') }`,
+            },
+        });
+        return response.data;
+    } catch (error) {
+        if (error instanceof AxiosError && error.response) {
+            return thunkAPI.rejectWithValue(error.response.data.error || 'Failed to fetch inventory summary');
+        }
+        if (error instanceof Error) {
+            return thunkAPI.rejectWithValue(error.message);
+        }
+        return thunkAPI.rejectWithValue('An unknown error occurred while fetching inventory summary.');
+    }
+});
+
+// Fetch all inventories
 export const fetchInventories = createAsyncThunk('inventories/fetchInventories', async (_, thunkAPI) => {
     try {
         const response = await apiClient.get('/inventory');
@@ -39,6 +73,7 @@ export const fetchInventories = createAsyncThunk('inventories/fetchInventories',
     }
 });
 
+// Delete an inventory
 export const deleteInventory = createAsyncThunk('inventories/deleteInventory', async (inventoryId: number, thunkAPI) => {
     try {
         await apiClient.delete(`/inventory/${ inventoryId }`, {
@@ -75,6 +110,20 @@ const inventorySlice = createSlice({
             state.loading = false;
             state.error = action.payload as string;
         });
+
+        builder.addCase(fetchInventorySummary.pending, (state) => {
+            state.loading = true;
+            state.error = null;
+        });
+        builder.addCase(fetchInventorySummary.fulfilled, (state, action) => {
+            state.loading = false;
+            state.summary = action.payload;
+        });
+        builder.addCase(fetchInventorySummary.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.payload as string;
+        });
+
         builder.addCase(deleteInventory.pending, (state) => {
             state.loading = true;
             state.error = null;
